@@ -4,3 +4,6 @@ TODO:
 - [x] Add Collaborators
 - [x] Make a README.md
 - [x] Make .md file for contributors
+- [ ] Add first 3D Scripts
+- [x] Create utilities Dir
+- [ ] More ?
