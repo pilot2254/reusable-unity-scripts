@@ -28,5 +28,3 @@ public class HueCycler : MonoBehaviour
         }
     }
 }
-
-// Ahoj, potrebujem pomoct. Som uplne strateny na hodine Unity v skole. Mame totiz spravit hru "EarthDefender" co je vlastne simple unity hra kde v strede obrazovky mas 2D Circle "Earth" a niaky kanon ktory sa otaca tym smerom kam smeruje 
