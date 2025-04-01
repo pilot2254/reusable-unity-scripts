@@ -11,4 +11,9 @@ We welcome contributions from the community! If you'd like to contribute:
    - Version numbers use a single decimal point format (e.g., 3.9)
    - When the decimal part reaches 9, increment the whole number and reset the decimal part to 0
    - For example: after 3.9 comes 4.0, after 4.9 comes 5.0
-7. Submit a pull request
+7. **Important**: Add detailed documentation comments at the top of each script file that explain:
+   - The purpose of the script
+   - How to set up and configure the script
+   - Any dependencies or prerequisites
+   - Usage examples where appropriate
+8. Submit a pull request
