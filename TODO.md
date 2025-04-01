@@ -4,6 +4,35 @@ TODO:
 - [x] Add Collaborators
 - [x] Make a README.md
 - [x] Make .md file for contributors
-- [ ] Add first 3D Scripts
 - [x] Create utilities Dir
+- [ ] Add first 3D Scripts
+  - [ ] Simple Character Controller
+  - [ ] Third-Person Camera Follow
+  - [ ] Object Bobbing
+  - [ ] Waypoint System
+  - [ ] Simple AI Chase
+- [ ] Add 2D Scripts
+  - [x] Rotate on Movement
+  - [x] Hue Cycler
+  - [x] Follow Player
+  - [ ] Parallax Scrolling
+  - [ ] Screen Wrap
+  - [ ] Enemy Patrol
+  - [ ] Dash Mechanic
+  - [ ] Pixel-Perfect Camera
+- [ ] Add Cross-Compatible Scripts (2D & 3D)
+  - [ ] Auto Destroy
+  - [ ] Simple Timer
+  - [ ] Health System
+  - [ ] Button Press Event
+  - [ ] Save & Load System
+- [ ] Improve README.md  
+  - [ ] Add script descriptions  
+  - [ ] Include usage examples  
+  - [ ] Add GIFs/screenshots for clarity  
+- [ ] Write documentation for each script  
+- [ ] Add script templates (for consistency)  
+- [ ] Create example Unity projects for testing  
+- [ ] Optimize and refactor existing scripts  
+- [ ] Get community feedback for more ideas  
 - [ ] More ?
