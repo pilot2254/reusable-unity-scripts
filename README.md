@@ -1,4 +1,4 @@
-# Unity 6 Assets
+# Reusable Unity 6 Scripts
 
 A collection of reusable C# scripts for 2D and 3D game development in Unity 6.
 
