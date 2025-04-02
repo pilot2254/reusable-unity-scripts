@@ -1,11 +1,10 @@
 using UnityEngine;
 
-
-/// SpriteFollowPlayer: This script makes a sprite follow the player with configurable speed
+/// followPlayer: This script makes a sprite follow the player with configurable speed
 /// and stopping distance. It can be used for companions, enemies, collectibles that follow
 /// the player, or any object that needs to track and move toward the player.
 
-public class SpriteFollowPlayer : MonoBehaviour
+public class followPlayer : MonoBehaviour
 {
     [SerializeField] private Transform player; // Reference to the player's Transform component to track their position
     [SerializeField] private float followSpeed = 5f; // How quickly the sprite moves toward the player (higher = faster)
