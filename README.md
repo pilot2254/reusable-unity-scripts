@@ -1,10 +1,10 @@
 # Reusable Unity Scripts
 
-A collection of reusable C# scripts for 2D and 3D game development in Unity.
+A collection of reusable C# scripts and project templates for 2D and 3D game development in Unity.
 
 ## Overview
 
-This repository contains a curated set of C# scripts that can be used across various Unity projects. These assets are designed to accelerate development by providing ready-to-use components for common game functionality in both 2D and 3D environments.
+This repository contains a curated set of C# scripts and project templates that can be used across various Unity projects. These assets are designed to accelerate development by providing ready-to-use components for common game functionality in both 2D and 3D environments.
 
 **Note:** This project was primarily developed for Unity 6. Compatibility with older or newer versions of Unity is not guaranteed and may require modifications.
 
@@ -13,6 +13,7 @@ This repository contains a curated set of C# scripts that can be used across var
 - **2D Scripts**: Components specifically designed for 2D game development
 - **3D Scripts**: Components specifically designed for 3D game development  
 - **Utilities**: General purpose scripts that can be used in any Unity project
+- **Templates**: Complete project templates with useful scripts included
 
 ## Installation
 
@@ -42,4 +43,4 @@ Licensed under MIT License
 
 ## Contact
 
-Discord: `@michal.flaska` (preferred) or `@pilot2254`
+Discord: @michal.flaska or @pilot2254
