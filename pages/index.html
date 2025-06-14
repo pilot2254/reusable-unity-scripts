@@ -21,17 +21,45 @@
             }
         }
     </script>
+    <style>
+        ::selection {
+            background-color: rgba(0, 244, 0, 0.1);
+            color: #22c55e;
+        }
+        
+        ::-moz-selection {
+            background-color: rgba(0, 244, 0, 0.1);
+            color: #22c55e;
+        }
+        
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f4f4f5;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #a1a1aa;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #71717a;
+        }
+    </style>
 </head>
-<body class="bg-gray-50 font-sans">
-    <header class="bg-white shadow-sm border-b">
+<body class="bg-zinc-50 font-sans">
+    <header class="bg-white shadow-sm border-b border-zinc-200">
         <div class="max-w-6xl mx-auto px-4 py-6">
             <div class="flex items-center justify-between">
                 <div class="flex items-center space-x-3">
-                    <i class="fab fa-unity text-2xl text-gray-800"></i>
-                    <h1 class="text-2xl font-semibold text-gray-900">Reusable Unity 6 Scripts</h1>
+                    <i class="fab fa-unity text-2xl text-zinc-800"></i>
+                    <h1 class="text-2xl font-semibold text-zinc-900">Reusable Unity 6 Scripts</h1>
                 </div>
                 <a href="https://github.com/pilot2254/reusable-unity-6-scripts" 
-                   class="inline-flex items-center space-x-2 bg-gray-900 text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition-colors">
+                   class="inline-flex items-center space-x-2 bg-zinc-900 text-white px-4 py-2 rounded-lg hover:bg-zinc-800 transition-colors">
                     <i class="fab fa-github"></i>
                     <span>View on GitHub</span>
                 </a>
@@ -41,20 +69,20 @@
 
     <main class="max-w-6xl mx-auto px-4 py-12">
         <section class="text-center mb-16">
-            <h2 class="text-4xl font-bold text-gray-900 mb-4">Accelerate Your Unity Development</h2>
-            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+            <h2 class="text-4xl font-bold text-zinc-900 mb-4">Accelerate Your Unity Development</h2>
+            <p class="text-xl text-zinc-600 max-w-3xl mx-auto">
                 A curated collection of C# scripts designed to speed up your Unity 6 projects with ready-to-use components for both 2D and 3D game development.
             </p>
         </section>
 
         <section class="grid md:grid-cols-3 gap-8 mb-16">
-            <div class="bg-white rounded-xl p-6 shadow-sm border">
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-zinc-200">
                 <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
                     <i class="fas fa-layer-group text-blue-600 text-xl"></i>
                 </div>
-                <h3 class="text-xl font-semibold text-gray-900 mb-2">2D Scripts</h3>
-                <p class="text-gray-600 mb-4">Components specifically designed for 2D game development</p>
-                <ul class="text-sm text-gray-500 space-y-1">
+                <h3 class="text-xl font-semibold text-zinc-900 mb-2">2D Scripts</h3>
+                <p class="text-zinc-600 mb-4">Components specifically designed for 2D game development</p>
+                <ul class="text-sm text-zinc-500 space-y-1">
                     <li>Camera effects and movement</li>
                     <li>Player following systems</li>
                     <li>Object pooling</li>
@@ -62,99 +90,127 @@
                 </ul>
             </div>
 
-            <div class="bg-white rounded-xl p-6 shadow-sm border">
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-zinc-200">
                 <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
                     <i class="fas fa-cube text-green-600 text-xl"></i>
                 </div>
-                <h3 class="text-xl font-semibold text-gray-900 mb-2">3D Scripts</h3>
-                <p class="text-gray-600 mb-4">Components specifically designed for 3D game development</p>
-                <p class="text-sm text-gray-500 italic">Coming soon - contribute your 3D scripts!</p>
+                <h3 class="text-xl font-semibold text-zinc-900 mb-2">3D Scripts</h3>
+                <p class="text-zinc-600 mb-4">Components specifically designed for 3D game development</p>
+                <p class="text-sm text-zinc-500 italic">Coming soon - contribute your 3D scripts!</p>
             </div>
 
-            <div class="bg-white rounded-xl p-6 shadow-sm border">
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-zinc-200">
                 <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
                     <i class="fas fa-tools text-purple-600 text-xl"></i>
                 </div>
-                <h3 class="text-xl font-semibold text-gray-900 mb-2">Utilities</h3>
-                <p class="text-gray-600 mb-4">General purpose scripts for any Unity project</p>
-                <p class="text-sm text-gray-500 italic">Coming soon - contribute your utility scripts!</p>
+                <h3 class="text-xl font-semibold text-zinc-900 mb-2">Utilities</h3>
+                <p class="text-zinc-600 mb-4">General purpose scripts for any Unity project</p>
+                <p class="text-sm text-zinc-500 italic">Coming soon - contribute your utility scripts!</p>
             </div>
         </section>
 
-        <section class="bg-white rounded-xl p-8 shadow-sm border mb-16">
-            <h3 class="text-2xl font-semibold text-gray-900 mb-6">Available 2D Scripts</h3>
-            <div class="grid md:grid-cols-2 gap-6">
-                <div class="border rounded-lg p-4">
-                    <h4 class="font-mono text-lg font-medium text-gray-900 mb-2">CameraShaker.cs</h4>
-                    <p class="text-gray-600 text-sm">Add screen shake effects to enhance game feel and impact</p>
+        <section class="bg-white rounded-xl p-8 shadow-sm border border-zinc-200 mb-16">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-2xl font-semibold text-zinc-900">Available Scripts</h3>
+                <a href="https://github.com/pilot2254/reusable-unity-6-scripts/tree/main/scripts" 
+                   class="inline-flex items-center space-x-2 text-blue-600 hover:text-blue-700 font-medium">
+                    <span>See More</span>
+                    <i class="fas fa-external-link-alt text-sm"></i>
+                </a>
+            </div>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div>
+                    <h4 class="text-lg font-semibold text-zinc-900 mb-4 flex items-center">
+                        <i class="fas fa-layer-group text-blue-600 mr-2"></i>
+                        2D Scripts
+                    </h4>
+                    <div class="space-y-4">
+                        <div class="border border-zinc-200 rounded-lg p-4">
+                            <h5 class="font-mono text-base font-medium text-zinc-900 mb-2">CameraShaker.cs</h5>
+                            <p class="text-zinc-600 text-sm">Add screen shake effects to enhance game feel and impact</p>
+                        </div>
+                        <div class="border border-zinc-200 rounded-lg p-4">
+                            <h5 class="font-mono text-base font-medium text-zinc-900 mb-2">followPlayer.cs</h5>
+                            <p class="text-zinc-600 text-sm">Smooth camera following system for player movement</p>
+                        </div>
+                        <div class="border border-zinc-200 rounded-lg p-4">
+                            <h5 class="font-mono text-base font-medium text-zinc-900 mb-2">hueCycler.cs</h5>
+                            <p class="text-zinc-600 text-sm">Cycle through hue values for dynamic color effects</p>
+                        </div>
+                        <div class="border border-zinc-200 rounded-lg p-4">
+                            <h5 class="font-mono text-base font-medium text-zinc-900 mb-2">LevelTeleporter.cs</h5>
+                            <p class="text-zinc-600 text-sm">Handle scene transitions and level teleportation</p>
+                        </div>
+                        <div class="border border-zinc-200 rounded-lg p-4">
+                            <h5 class="font-mono text-base font-medium text-zinc-900 mb-2">ObjectPool.cs</h5>
+                            <p class="text-zinc-600 text-sm">Efficient object pooling system for performance optimization</p>
+                        </div>
+                        <div class="border border-zinc-200 rounded-lg p-4">
+                            <h5 class="font-mono text-base font-medium text-zinc-900 mb-2">rotateOnMove.cs</h5>
+                            <p class="text-zinc-600 text-sm">Rotate objects based on movement direction</p>
+                        </div>
+                    </div>
                 </div>
-                <div class="border rounded-lg p-4">
-                    <h4 class="font-mono text-lg font-medium text-gray-900 mb-2">followPlayer.cs</h4>
-                    <p class="text-gray-600 text-sm">Smooth camera following system for player movement</p>
-                </div>
-                <div class="border rounded-lg p-4">
-                    <h4 class="font-mono text-lg font-medium text-gray-900 mb-2">hueCycler.cs</h4>
-                    <p class="text-gray-600 text-sm">Cycle through hue values for dynamic color effects</p>
-                </div>
-                <div class="border rounded-lg p-4">
-                    <h4 class="font-mono text-lg font-medium text-gray-900 mb-2">LevelTeleporter.cs</h4>
-                    <p class="text-gray-600 text-sm">Handle scene transitions and level teleportation</p>
-                </div>
-                <div class="border rounded-lg p-4">
-                    <h4 class="font-mono text-lg font-medium text-gray-900 mb-2">ObjectPool.cs</h4>
-                    <p class="text-gray-600 text-sm">Efficient object pooling system for performance optimization</p>
-                </div>
-                <div class="border rounded-lg p-4">
-                    <h4 class="font-mono text-lg font-medium text-gray-900 mb-2">rotateOnMove.cs</h4>
-                    <p class="text-gray-600 text-sm">Rotate objects based on movement direction</p>
+                <div>
+                    <h4 class="text-lg font-semibold text-zinc-900 mb-4 flex items-center">
+                        <i class="fas fa-cube text-green-600 mr-2"></i>
+                        3D Scripts
+                    </h4>
+                    <div class="flex items-center justify-center h-48 border-2 border-dashed border-zinc-300 rounded-lg">
+                        <div class="text-center">
+                            <i class="fas fa-plus-circle text-3xl text-zinc-400 mb-3"></i>
+                            <p class="text-zinc-500 font-medium">Coming Soon</p>
+                            <p class="text-zinc-400 text-sm">Contribute your 3D scripts!</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <section class="bg-gray-900 text-white rounded-xl p-8 mb-16">
-            <h3 class="text-2xl font-semibold mb-6">How to Use</h3>
+        <section class="bg-white rounded-xl p-8 shadow-sm border border-zinc-200 mb-16">
+            <h3 class="text-2xl font-semibold text-zinc-900 mb-6">How to Use</h3>
             <div class="space-y-6">
                 <div class="flex items-start space-x-4">
                     <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                        <span class="text-sm font-semibold">1</span>
+                        <span class="text-sm font-semibold text-white">1</span>
                     </div>
                     <div>
-                        <h4 class="font-semibold mb-2">Clone or Download</h4>
-                        <p class="text-gray-300">Clone the repository or download individual scripts from the GitHub repository</p>
-                        <code class="block bg-gray-800 text-green-400 p-2 rounded mt-2 text-sm font-mono">
+                        <h4 class="font-semibold text-zinc-900 mb-2">Clone or Download</h4>
+                        <p class="text-zinc-600 mb-3">Clone the repository or download individual scripts from the GitHub repository</p>
+                        <code class="block bg-zinc-100 text-zinc-800 p-3 rounded-lg text-sm font-mono border border-zinc-200">
                             git clone https://github.com/pilot2254/reusable-unity-6-scripts.git
                         </code>
                     </div>
                 </div>
                 <div class="flex items-start space-x-4">
                     <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                        <span class="text-sm font-semibold">2</span>
+                        <span class="text-sm font-semibold text-white">2</span>
                     </div>
                     <div>
-                        <h4 class="font-semibold mb-2">Import to Unity</h4>
-                        <p class="text-gray-300">Copy the desired scripts to your Unity project's Assets folder</p>
+                        <h4 class="font-semibold text-zinc-900 mb-2">Import to Unity</h4>
+                        <p class="text-zinc-600">Copy the desired scripts to your Unity project's Assets folder</p>
                     </div>
                 </div>
                 <div class="flex items-start space-x-4">
                     <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                        <span class="text-sm font-semibold">3</span>
+                        <span class="text-sm font-semibold text-white">3</span>
                     </div>
                     <div>
-                        <h4 class="font-semibold mb-2">Attach and Configure</h4>
-                        <p class="text-gray-300">Attach scripts to GameObjects and configure parameters in the Inspector</p>
+                        <h4 class="font-semibold text-zinc-900 mb-2">Attach and Configure</h4>
+                        <p class="text-zinc-600">Attach scripts to GameObjects and configure parameters in the Inspector</p>
                     </div>
                 </div>
             </div>
         </section>
 
         <section class="text-center">
-            <h3 class="text-2xl font-semibold text-gray-900 mb-4">Contribute</h3>
-            <p class="text-gray-600 mb-6 max-w-2xl mx-auto">
+            <h3 class="text-2xl font-semibold text-zinc-900 mb-4">Contribute</h3>
+            <p class="text-zinc-600 mb-6 max-w-2xl mx-auto">
                 Help grow this collection by contributing your own Unity scripts. Check out the contributing guidelines and submit a pull request.
             </p>
             <div class="flex justify-center space-x-4">
                 <a href="https://github.com/pilot2254/reusable-unity-6-scripts/blob/main/CONTRIBUTING.md" 
-                   class="inline-flex items-center space-x-2 border border-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-50 transition-colors">
+                   class="inline-flex items-center space-x-2 border border-zinc-300 text-zinc-700 px-6 py-3 rounded-lg hover:bg-zinc-50 transition-colors">
                     <i class="fas fa-book"></i>
                     <span>Contributing Guide</span>
                 </a>
@@ -167,14 +223,14 @@
         </section>
     </main>
 
-    <footer class="bg-white border-t mt-16">
+    <footer class="bg-white border-t border-zinc-200 mt-16">
         <div class="max-w-6xl mx-auto px-4 py-8">
             <div class="flex items-center justify-between">
-                <p class="text-gray-600">
+                <p class="text-zinc-600">
                     Licensed under <a href="https://github.com/pilot2254/reusable-unity-6-scripts/blob/main/LICENSE" class="text-blue-600 hover:underline">MIT License</a>
                 </p>
                 <div class="flex items-center space-x-4">
-                    <a href="https://github.com/pilot2254" class="text-gray-600 hover:text-gray-900">
+                    <a href="https://github.com/pilot2254" class="text-zinc-600 hover:text-zinc-900">
                         <i class="fab fa-github"></i>
                         <span class="ml-1">pilot2254</span>
                     </a>
