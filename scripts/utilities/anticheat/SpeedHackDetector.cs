@@ -24,7 +24,7 @@ public class SpeedHackDetector : MonoBehaviour
 
     private void Start()
     {
-        if (config == null) return;
+        if (config == null || !config.antiCheatEnabled) return;
         DontDestroyOnLoad(gameObject);
         lastRealtime = Time.realtimeSinceStartup;
         lastGametime = Time.time;
@@ -50,6 +50,7 @@ public class SpeedHackDetector : MonoBehaviour
 
     private void TriggerDetection(string message)
     {
+        if (!config.antiCheatEnabled) return;
         if (config.logDetections) Debug.LogError(message);
         if (config.terminateOnDetection) TerminateGame();
     }

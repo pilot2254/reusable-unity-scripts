@@ -11,6 +11,7 @@
  * Fields:
  *   - terminateOnDetection: If true, the game will shut down on detection.
  *   - logDetections: If true, detection events are logged to the console.
+ * Central configuration object for anti-cheat behavior.
  */
 
 using UnityEngine;
@@ -18,6 +19,10 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "AntiCheatConfig", menuName = "AntiCheat/Config")]
 public class AntiCheatConfig : ScriptableObject
 {
+    [Header("Global Toggle")]
+    [Tooltip("Enable or disable all anti-cheat functionality.")]
+    public bool antiCheatEnabled = true;
+
     [Header("Detection Response")]
     [Tooltip("Immediately shut down the game when a cheat is detected.")]
     public bool terminateOnDetection = true;

@@ -24,7 +24,7 @@ public class MonoInjectionDetector : MonoBehaviour
 
     private void Start()
     {
-        if (config == null) return;
+        if (config == null || !config.antiCheatEnabled) return;
         DontDestroyOnLoad(gameObject);
 
         foreach (Assembly asm in AppDomain.CurrentDomain.GetAssemblies())
@@ -37,6 +37,7 @@ public class MonoInjectionDetector : MonoBehaviour
 
     private void TriggerDetection(string message)
     {
+        if (!config.antiCheatEnabled) return;
         if (config.logDetections) Debug.LogError(message);
         if (config.terminateOnDetection) TerminateGame();
     }

@@ -21,7 +21,7 @@ public class AssemblyIntegrityChecker : MonoBehaviour
 
     private void Start()
     {
-        if (config == null || string.IsNullOrEmpty(expectedSHA256)) return;
+        if (config == null || !config.antiCheatEnabled || string.IsNullOrEmpty(expectedSHA256)) return;
         DontDestroyOnLoad(gameObject);
 
         string path = Path.Combine(Application.dataPath, "../Managed/Assembly-CSharp.dll");
@@ -46,6 +46,7 @@ public class AssemblyIntegrityChecker : MonoBehaviour
 
     private void TriggerDetection(string message)
     {
+        if (!config.antiCheatEnabled) return;
         if (config.logDetections) Debug.LogError(message);
         if (config.terminateOnDetection) TerminateGame();
     }

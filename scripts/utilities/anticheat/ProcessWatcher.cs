@@ -29,7 +29,7 @@ public class ProcessWatcher : MonoBehaviour
 
     private void Start()
     {
-        if (config == null) return;
+        if (config == null || !config.antiCheatEnabled) return;
         DontDestroyOnLoad(gameObject);
         StartCoroutine(ScanLoop());
     }
@@ -58,6 +58,7 @@ public class ProcessWatcher : MonoBehaviour
 
     private void TriggerDetection(string message)
     {
+        if (!config.antiCheatEnabled) return;
         if (config.logDetections) Debug.LogError(message);
         if (config.terminateOnDetection) TerminateGame();
     }
