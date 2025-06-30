@@ -87,6 +87,19 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #71717a;
         }
+
+        .contributor-avatar {
+            transition: all 0.3s ease;
+        }
+
+        .contributor-avatar:hover {
+            transform: scale(1.1);
+            filter: brightness(1.2);
+        }
+
+        .founder-badge {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
     </style>
 </head>
 <body class="bg-zinc-900 font-sans text-zinc-100">
@@ -262,6 +275,155 @@
             </div>
         </section>
 
+        <section class="bg-zinc-800 rounded-xl p-8 shadow-sm border border-zinc-700 mb-16">
+            <div class="text-center mb-8">
+                <h3 class="text-2xl font-semibold text-zinc-100 mb-4 flex items-center justify-center">
+                    <i class="fas fa-users text-purple-400 mr-3"></i>
+                    Contributors
+                </h3>
+                <p class="text-zinc-300 max-w-2xl mx-auto">
+                    Amazing developers who have contributed to making this project better for the Unity community.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
+                <!-- Founder -->
+                <div class="text-center group">
+                    <div class="relative inline-block mb-3">
+                        <img src="https://github.com/pilot2254.png" 
+                             alt="pilot2254" 
+                             class="contributor-avatar w-16 h-16 rounded-full border-2 border-zinc-600 mx-auto"
+                             loading="lazy">
+                        <div class="founder-badge absolute -top-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center">
+                            <i class="fas fa-crown text-white text-xs"></i>
+                        </div>
+                    </div>
+                    <h4 class="font-medium text-zinc-100 text-sm mb-1">pilot2254</h4>
+                    <p class="text-xs text-amber-400 font-medium mb-2">Founder</p>
+                    <a href="https://github.com/pilot2254" 
+                       class="text-zinc-400 hover:text-blue-400 transition-colors">
+                        <i class="fab fa-github text-sm"></i>
+                    </a>
+                </div>
+
+                <!-- Contributors -->
+
+                <div class="text-center group">
+                    <div class="relative inline-block mb-3">
+                        <img src="https://github.com/maty7253.png" 
+                             alt="maty7253" 
+                             class="contributor-avatar w-16 h-16 rounded-full border-2 border-zinc-600 mx-auto"
+                             loading="lazy">
+                    </div>
+                    <h4 class="font-medium text-zinc-100 text-sm mb-1">maty7253</h4>
+                    <p class="text-xs text-green-400 mb-2">Active Contributor</p>
+                    <a href="https://github.com/maty7253" 
+                       class="text-zinc-400 hover:text-blue-400 transition-colors">
+                        <i class="fab fa-github text-sm"></i>
+                    </a>
+                </div>
+                
+                <div class="text-center group">
+                    <div class="relative inline-block mb-3">
+                        <img src="https://github.com/kayley-skylover.png" 
+                             alt="kayley-skylover" 
+                             class="contributor-avatar w-16 h-16 rounded-full border-2 border-zinc-600 mx-auto"
+                             loading="lazy">
+                    </div>
+                    <h4 class="font-medium text-zinc-100 text-sm mb-1">kayley-skylover</h4>
+                    <p class="text-xs text-green-400 mb-2">Active Contributor</p>
+                    <a href="https://github.com/kayley-skylover" 
+                       class="text-zinc-400 hover:text-blue-400 transition-colors">
+                        <i class="fab fa-github text-sm"></i>
+                    </a>
+                </div>
+
+                <div class="text-center group">
+                    <div class="relative inline-block mb-3">
+                        <img src="https://github.com/MarPalko.png" 
+                             alt="MarPalko" 
+                             class="contributor-avatar w-16 h-16 rounded-full border-2 border-zinc-600 mx-auto"
+                             loading="lazy">
+                    </div>
+                    <h4 class="font-medium text-zinc-100 text-sm mb-1">MarPalko</h4>
+                    <p class="text-xs text-zinc-400 mb-2">Contributor</p>
+                    <a href="https://github.com/MarPalko" 
+                       class="text-zinc-400 hover:text-blue-400 transition-colors">
+                        <i class="fab fa-github text-sm"></i>
+                    </a>
+                </div>
+
+                <div class="text-center group">
+                    <div class="relative inline-block mb-3">
+                        <img src="https://github.com/ODLD25.png" 
+                             alt="ODLD25" 
+                             class="contributor-avatar w-16 h-16 rounded-full border-2 border-zinc-600 mx-auto"
+                             loading="lazy">
+                    </div>
+                    <h4 class="font-medium text-zinc-100 text-sm mb-1">ODLD25</h4>
+                    <p class="text-xs text-zinc-400 mb-2">Contributor</p>
+                    <a href="https://github.com/ODLD25" 
+                       class="text-zinc-400 hover:text-blue-400 transition-colors">
+                        <i class="fab fa-github text-sm"></i>
+                    </a>
+                </div>
+
+                <div class="text-center group">
+                    <div class="relative inline-block mb-3">
+                        <img src="https://github.com/eugeniy3339.png" 
+                             alt="eugeniy3339" 
+                             class="contributor-avatar w-16 h-16 rounded-full border-2 border-zinc-600 mx-auto"
+                             loading="lazy">
+                    </div>
+                    <h4 class="font-medium text-zinc-100 text-sm mb-1">eugeniy3339</h4>
+                    <p class="text-xs text-zinc-400 mb-2">Contributor</p>
+                    <a href="https://github.com/eugeniy3339" 
+                       class="text-zinc-400 hover:text-blue-400 transition-colors">
+                        <i class="fab fa-github text-sm"></i>
+                    </a>
+                </div>
+
+                <div class="text-center group">
+                    <div class="relative inline-block mb-3">
+                        <img src="https://github.com/Pavol-Panisz.png" 
+                             alt="Pavol-Panisz" 
+                             class="contributor-avatar w-16 h-16 rounded-full border-2 border-zinc-600 mx-auto"
+                             loading="lazy">
+                    </div>
+                    <h4 class="font-medium text-zinc-100 text-sm mb-1">Pavol-Panisz</h4>
+                    <p class="text-xs text-zinc-400 mb-2">Contributor</p>
+                    <a href="https://github.com/Pavol-Panisz" 
+                       class="text-zinc-400 hover:text-blue-400 transition-colors">
+                        <i class="fab fa-github text-sm"></i>
+                    </a>
+                </div>
+
+                <div class="text-center group">
+                    <div class="relative inline-block mb-3">
+                        <img src="https://github.com/pavolp-skyro.png" 
+                             alt="pavolp-skyro" 
+                             class="contributor-avatar w-16 h-16 rounded-full border-2 border-zinc-600 mx-auto"
+                             loading="lazy">
+                    </div>
+                    <h4 class="font-medium text-zinc-100 text-sm mb-1">pavolp-skyro</h4>
+                    <p class="text-xs text-zinc-400 mb-2">Contributor</p>
+                    <a href="https://github.com/pavolp-skyro" 
+                       class="text-zinc-400 hover:text-blue-400 transition-colors">
+                        <i class="fab fa-github text-sm"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="text-center mt-8 pt-6 border-t border-zinc-700">
+                <p class="text-zinc-400 text-sm mb-4">Want to see your avatar here?</p>
+                <a href="https://github.com/pilot2254/reusable-unity-scripts/blob/main/CONTRIBUTING.md" 
+                   class="inline-flex items-center space-x-2 text-blue-400 hover:text-blue-300 font-medium">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>Contribute to the project</span>
+                </a>
+            </div>
+        </section>
+
         <section class="text-center">
             <h3 class="text-2xl font-semibold text-zinc-100 mb-4">Contribute</h3>
             <p class="text-zinc-300 mb-6 max-w-2xl mx-auto">
@@ -286,7 +448,7 @@
         <div class="max-w-6xl mx-auto px-4 py-8">
             <div class="flex items-center justify-between">
                 <p class="text-zinc-300">
-                    Licensed under <a href="https://github.com/pilot2254/reusable-unity-scripts/blob/main/LICENSE" class="text-blue-400 hover:underline">MIT License</a>
+                    Licensed under the <a href="https://github.com/pilot2254/reusable-unity-scripts/blob/main/LICENSE" class="text-blue-400 hover:underline">MIT License</a>.
                 </p>
                 <div class="flex items-center space-x-4">
                     <a href="https://github.com/pilot2254" class="text-zinc-300 hover:text-zinc-100">
