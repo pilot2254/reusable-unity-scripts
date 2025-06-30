@@ -35,7 +35,7 @@ These scripts are developed and tested with Unity 6. While they may work with ot
 
 ## Contributing
 
-Contributions are welcome! Please read our contributing guidelines before submitting pull requests.
+Contributions are welcome! Please read our [contributing guidelines](https://github.com/pilot2254/reusable-unity-scripts/blob/main/CONTRIBUTING.md) before submitting pull requests.
 
 ## License
 
