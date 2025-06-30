@@ -10,10 +10,11 @@ This repository contains a curated set of C# scripts and project templates that 
 
 ## Contents
 
-- **2D Scripts**: Components specifically designed for 2D game development
-- **3D Scripts**: Components specifically designed for 3D game development  
-- **Utilities**: General purpose scripts that can be used in any Unity project
-- **Templates**: Complete project templates with useful scripts included
+- **[2D Scripts](https://github.com/pilot2254/reusable-unity-scripts/tree/main/scripts/2d)**: Components specifically designed for 2D game development
+- **[3D Scripts](https://github.com/pilot2254/reusable-unity-scripts/tree/main/scripts/3d)**: Components specifically designed for 3D game development  
+- **[Utilities](https://github.com/pilot2254/reusable-unity-scripts/tree/main/scripts/utilities)**: General purpose scripts that can be used in any Unity project
+- **[Templates](https://github.com/pilot2254/reusable-unity-scripts/tree/main/templates)**: Complete project templates with useful scripts included
+- **[Website](https://github.com/pilot2254/reusable-unity-scripts/tree/main/website)**: Simple website for this project
 
 ## Installation
 
@@ -39,8 +40,8 @@ Contributions are welcome! Please read our [contributing guidelines](https://git
 
 ## License
 
-Licensed under MIT License
+Licensed under [MIT License](https://github.com/pilot2254/reusable-unity-scripts/blob/main/LICENSE)
 
 ## Contact
 
-Discord: @michal.flaska or @pilot2254
+Discord: **@michal.flaska** or **@pilot2254**
