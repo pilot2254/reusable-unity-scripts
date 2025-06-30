@@ -1,0 +1,47 @@
+/* global styles */
+
+::selection {
+    background-color: #06737b41;
+    color: #85d2fe;
+}
+
+::-moz-selection {
+    background-color: #06737b41;
+    color: #85d2fe;
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #18181b;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #52525b;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #71717a;
+}
+
+/* styles for the main page */
+
+.contributor-avatar {
+    transition: all 0.3s ease;
+}
+
+.contributor-avatar:hover {
+    transform: scale(1.1);
+    filter: brightness(1.2);
+}
+
+.founder-badge {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+
+.active-contributor-badge {
+    background: linear-gradient(135deg, #35a807, #06d945);
+}
