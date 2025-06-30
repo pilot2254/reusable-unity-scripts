@@ -1,8 +1,13 @@
 /*
- * AntiCheatProcessWatcher.cs
+ * ProcessWatcher.cs
  *
- * Purpose:
- *   Detects blacklisted processes and terminates game if detected.
+ * Description:
+ *   Periodically scans running processes for known cheat/debug tools.
+ *   Triggers detection if any blacklisted tool is found.
+ *
+ * Setup:
+ *   - Assign a reference to an AntiCheatConfig asset.
+ *   - Adjust scanInterval and blacklist as needed.
  */
 
 using UnityEngine;
@@ -10,19 +15,21 @@ using System.Diagnostics;
 using System.Linq;
 using System.Collections;
 
-public class AntiCheatProcessWatcher : MonoBehaviour
+public class ProcessWatcher : MonoBehaviour
 {
+    [Header("Configuration")]
     [SerializeField] private AntiCheatConfig config;
     [SerializeField] private float scanInterval = 5f;
 
-    [SerializeField]
-    private string[] blacklistedProcesses = new[]
+    [Tooltip("Process names to detect (case-insensitive).")]
+    [SerializeField] private string[] blacklistedProcesses =
     {
         "cheatengine", "dnspy", "ilspy", "x64dbg", "x32dbg", "ida", "ollydbg", "reclass", "processhacker"
     };
 
     private void Start()
     {
+        if (config == null) return;
         DontDestroyOnLoad(gameObject);
         StartCoroutine(ScanLoop());
     }
@@ -31,29 +38,31 @@ public class AntiCheatProcessWatcher : MonoBehaviour
     {
         while (true)
         {
-            ScanProcesses();
+            DetectBlacklistedProcesses();
             yield return new WaitForSeconds(scanInterval);
         }
     }
 
-    private void ScanProcesses()
+    private void DetectBlacklistedProcesses()
     {
-        var processes = Process.GetProcesses();
-        foreach (var proc in processes)
+        foreach (var process in Process.GetProcesses())
         {
-            string name = proc.ProcessName.ToLowerInvariant();
-            if (blacklistedProcesses.Any(bad => name.Contains(bad)))
+            string name = process.ProcessName.ToLowerInvariant();
+            if (blacklistedProcesses.Any(b => name.Contains(b)))
+            {
                 TriggerDetection($"Blacklisted process detected: {name}");
+                break;
+            }
         }
     }
 
     private void TriggerDetection(string message)
     {
         if (config.logDetections) Debug.LogError(message);
-        if (config.terminateOnDetection) Quit();
+        if (config.terminateOnDetection) TerminateGame();
     }
 
-    private void Quit()
+    private void TerminateGame()
     {
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;

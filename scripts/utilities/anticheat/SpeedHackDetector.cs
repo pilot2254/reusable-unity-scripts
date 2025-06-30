@@ -1,8 +1,12 @@
 /*
  * SpeedHackDetector.cs
  *
- * Purpose:
- *   Detects Time.time/Time.realtimeSinceStartup desync. Flags possible speedhacks.
+ * Description:
+ *   Detects unnatural manipulation of game time, such as speed hacks.
+ *
+ * How it Works:
+ *   Compares Time.time and Time.realtimeSinceStartup.
+ *   If the delta difference exceeds a defined threshold, flags cheating.
  */
 
 using UnityEngine;
@@ -10,44 +14,47 @@ using System.Collections;
 
 public class SpeedHackDetector : MonoBehaviour
 {
+    [Header("Configuration")]
     [SerializeField] private AntiCheatConfig config;
     [SerializeField] private float checkInterval = 5f;
-    [SerializeField] private float maxDeltaDesync = 0.5f;
+    [SerializeField] private float allowedDesync = 0.5f;
 
-    private float lastReal, lastGame;
+    private float lastRealtime;
+    private float lastGametime;
 
     private void Start()
     {
+        if (config == null) return;
         DontDestroyOnLoad(gameObject);
-        lastReal = Time.realtimeSinceStartup;
-        lastGame = Time.time;
-        StartCoroutine(DetectLoop());
+        lastRealtime = Time.realtimeSinceStartup;
+        lastGametime = Time.time;
+        StartCoroutine(CheckLoop());
     }
 
-    private IEnumerator DetectLoop()
+    private IEnumerator CheckLoop()
     {
         while (true)
         {
             yield return new WaitForSeconds(checkInterval);
 
-            float deltaReal = Time.realtimeSinceStartup - lastReal;
-            float deltaGame = Time.time - lastGame;
+            float realDelta = Time.realtimeSinceStartup - lastRealtime;
+            float gameDelta = Time.time - lastGametime;
 
-            if (Mathf.Abs(deltaReal - deltaGame) > maxDeltaDesync)
-                TriggerDetection($"Speed hack detected. Real:{deltaReal:F2}, Game:{deltaGame:F2}");
+            if (Mathf.Abs(realDelta - gameDelta) > allowedDesync)
+                TriggerDetection("Speed hack detected (time desync)");
 
-            lastReal = Time.realtimeSinceStartup;
-            lastGame = Time.time;
+            lastRealtime = Time.realtimeSinceStartup;
+            lastGametime = Time.time;
         }
     }
 
-    private void TriggerDetection(string msg)
+    private void TriggerDetection(string message)
     {
-        if (config.logDetections) Debug.LogError(msg);
-        if (config.terminateOnDetection) Quit();
+        if (config.logDetections) Debug.LogError(message);
+        if (config.terminateOnDetection) TerminateGame();
     }
 
-    private void Quit()
+    private void TerminateGame()
     {
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;

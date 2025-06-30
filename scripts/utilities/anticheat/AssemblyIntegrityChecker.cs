@@ -1,8 +1,12 @@
 /*
  * AssemblyIntegrityChecker.cs
  *
- * Purpose:
- *   Validates checksum of game assembly to detect tampering (e.g., via dnSpy).
+ * Description:
+ *   Verifies the SHA-256 hash of the Assembly-CSharp.dll file to detect tampering.
+ *
+ * Setup:
+ *   - Generate a SHA-256 hash of the Assembly-CSharp.dll file at build time.
+ *   - Assign the expected hash to the script.
  */
 
 using UnityEngine;
@@ -11,33 +15,42 @@ using System.Security.Cryptography;
 
 public class AssemblyIntegrityChecker : MonoBehaviour
 {
+    [Header("Configuration")]
     [SerializeField] private AntiCheatConfig config;
     [SerializeField] private string expectedSHA256;
 
-    private string TargetPath => Path.Combine(Application.dataPath, "../Managed/Assembly-CSharp.dll");
-
     private void Start()
     {
+        if (config == null || string.IsNullOrEmpty(expectedSHA256)) return;
         DontDestroyOnLoad(gameObject);
-        if (!File.Exists(TargetPath)) TriggerDetection("Assembly-CSharp.dll not found.");
 
-        using var stream = File.OpenRead(TargetPath);
-        using var sha = SHA256.Create();
+        string path = Path.Combine(Application.dataPath, "../Managed/Assembly-CSharp.dll");
+        if (!File.Exists(path))
+        {
+            TriggerDetection("Assembly-CSharp.dll not found.");
+            return;
+        }
 
-        byte[] hash = sha.ComputeHash(stream);
-        string hex = System.BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
-
-        if (hex != expectedSHA256.ToLowerInvariant())
-            TriggerDetection("Assembly-CSharp.dll tampering detected.");
+        string hash = ComputeSHA256(path);
+        if (!hash.Equals(expectedSHA256.ToLowerInvariant()))
+            TriggerDetection("Assembly-CSharp.dll integrity check failed.");
     }
 
-    private void TriggerDetection(string msg)
+    private string ComputeSHA256(string filePath)
     {
-        if (config.logDetections) Debug.LogError(msg);
-        if (config.terminateOnDetection) Quit();
+        using FileStream stream = File.OpenRead(filePath);
+        using SHA256 sha = SHA256.Create();
+        byte[] hashBytes = sha.ComputeHash(stream);
+        return System.BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
     }
 
-    private void Quit()
+    private void TriggerDetection(string message)
+    {
+        if (config.logDetections) Debug.LogError(message);
+        if (config.terminateOnDetection) TerminateGame();
+    }
+
+    private void TerminateGame()
     {
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;

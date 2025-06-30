@@ -1,8 +1,12 @@
 /*
  * DebuggerDetector.cs
  *
- * Purpose:
- *   Uses .NET Debugger class to detect if the game is being debugged.
+ * Description:
+ *   Checks if the game is being run under a debugger (Visual Studio, dnSpy, etc).
+ *
+ * Setup:
+ *   - Attach to any active GameObject in the scene.
+ *   - Assign AntiCheatConfig in Inspector.
  */
 
 using UnityEngine;
@@ -14,19 +18,20 @@ public class DebuggerDetector : MonoBehaviour
 
     private void Start()
     {
+        if (config == null) return;
         DontDestroyOnLoad(gameObject);
 
         if (Debugger.IsAttached || Debugger.IsLogging())
-            TriggerDetection("Debugger attached.");
+            TriggerDetection("Debugger detected.");
     }
 
-    private void TriggerDetection(string msg)
+    private void TriggerDetection(string message)
     {
-        if (config.logDetections) Debug.LogError(msg);
-        if (config.terminateOnDetection) Quit();
+        if (config.logDetections) Debug.LogError(message);
+        if (config.terminateOnDetection) TerminateGame();
     }
 
-    private void Quit()
+    private void TerminateGame()
     {
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
