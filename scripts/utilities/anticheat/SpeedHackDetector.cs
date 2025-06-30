@@ -1,12 +1,17 @@
 /*
  * SpeedHackDetector.cs
- *
- * Description:
- *   Detects unnatural manipulation of game time, such as speed hacks.
- *
- * How it Works:
- *   Compares Time.time and Time.realtimeSinceStartup.
- *   If the delta difference exceeds a defined threshold, flags cheating.
+ * 
+ * This script detects if the player is trying to manipulate game speed by comparing
+ * real-world elapsed time vs game time elapsed.
+ * Large discrepancies often indicate speed hacks or time cheats.
+ * 
+ * Usage:
+ * - Attach this script to a GameObject early in the scene.
+ * - Assign the AntiCheatConfig asset.
+ * - Adjust checkInterval and allowedDesync if needed.
+ * 
+ * Notes:
+ * - Does not detect every hack, but serves as a good first line of defense.
  */
 
 using UnityEngine;
@@ -16,18 +21,34 @@ public class SpeedHackDetector : MonoBehaviour
 {
     [Header("Configuration")]
     [SerializeField] private AntiCheatConfig config;
-    [SerializeField] private float checkInterval = 5f;
-    [SerializeField] private float allowedDesync = 0.5f;
+    [SerializeField, Tooltip("How often (seconds) to check for time desync.")] 
+    private float checkInterval = 5f;
+
+    [SerializeField, Tooltip("Allowed time difference in seconds before detection triggers.")]
+    private float allowedDesync = 0.5f;
 
     private float lastRealtime;
     private float lastGametime;
 
     private void Start()
     {
-        if (config == null || !config.antiCheatEnabled) return;
+        if (config == null)
+        {
+            Debug.LogError("SpeedHackDetector: Config asset is not assigned.");
+            enabled = false;
+            return;
+        }
+
+        if (!config.antiCheatEnabled)
+        {
+            enabled = false;
+            return;
+        }
+
         DontDestroyOnLoad(gameObject);
         lastRealtime = Time.realtimeSinceStartup;
         lastGametime = Time.time;
+
         StartCoroutine(CheckLoop());
     }
 
@@ -41,7 +62,7 @@ public class SpeedHackDetector : MonoBehaviour
             float gameDelta = Time.time - lastGametime;
 
             if (Mathf.Abs(realDelta - gameDelta) > allowedDesync)
-                TriggerDetection("Speed hack detected (time desync)");
+                TriggerDetection("Speed hack detected due to time desynchronization.");
 
             lastRealtime = Time.realtimeSinceStartup;
             lastGametime = Time.time;
@@ -51,8 +72,12 @@ public class SpeedHackDetector : MonoBehaviour
     private void TriggerDetection(string message)
     {
         if (!config.antiCheatEnabled) return;
-        if (config.logDetections) Debug.LogError(message);
-        if (config.terminateOnDetection) TerminateGame();
+
+        if (config.logDetections)
+            Debug.LogError("[AntiCheat] " + message);
+
+        if (config.terminateOnDetection)
+            TerminateGame();
     }
 
     private void TerminateGame()

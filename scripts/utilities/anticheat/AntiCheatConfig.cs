@@ -1,17 +1,21 @@
 /*
  * AntiCheatConfig.cs
- *
- * Description:
- *   Central configuration for all anti-cheat scripts. Controls global behavior.
- *
- * Setup:
- *   1. Right-click in the Unity Project window → Create → AntiCheat → Config.
- *   2. Assign the generated AntiCheatConfig asset to each anti-cheat script.
- *
- * Fields:
- *   - terminateOnDetection: If true, the game will shut down on detection.
- *   - logDetections: If true, detection events are logged to the console.
- * Central configuration object for anti-cheat behavior.
+ * 
+ * This script holds all the main configuration settings for the anti-cheat system.
+ * You can enable or disable the entire anti-cheat functionality here.
+ * It also controls what happens when cheating is detected—whether the game shuts down or just logs the event.
+ * 
+ * To use:
+ * 1. Create an instance of this ScriptableObject via the Unity Editor (Assets > Create > AntiCheat > Config).
+ * 2. Adjust the toggles to suit your needs.
+ * 3. Assign this config asset to all anti-cheat components.
+ * 
+ * Dependencies:
+ * - None.
+ * 
+ * Example:
+ * antiCheatConfig.antiCheatEnabled = true;
+ * antiCheatConfig.terminateOnDetection = true;
  */
 
 using UnityEngine;
@@ -20,13 +24,13 @@ using UnityEngine;
 public class AntiCheatConfig : ScriptableObject
 {
     [Header("Global Toggle")]
-    [Tooltip("Enable or disable all anti-cheat functionality.")]
+    [Tooltip("Turn this off to disable all anti-cheat checks.")]
     public bool antiCheatEnabled = true;
 
-    [Header("Detection Response")]
-    [Tooltip("Immediately shut down the game when a cheat is detected.")]
+    [Header("Detection Behavior")]
+    [Tooltip("If true, the game will exit immediately upon detecting cheating.")]
     public bool terminateOnDetection = true;
 
-    [Tooltip("Log detection events to the Unity console.")]
+    [Tooltip("If true, detection events will be logged to the Unity console.")]
     public bool logDetections = true;
 }

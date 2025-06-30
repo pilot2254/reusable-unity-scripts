@@ -1,13 +1,21 @@
 /*
  * ProcessWatcher.cs
- *
- * Description:
- *   Periodically scans running processes for known cheat/debug tools.
- *   Triggers detection if any blacklisted tool is found.
- *
+ * 
+ * This component regularly scans running processes on the player's machine
+ * and looks for known cheating or debugging tools like Cheat Engine, dnSpy, IDA, etc.
+ * If it finds any blacklisted processes, it triggers the configured detection response.
+ * 
  * Setup:
- *   - Assign a reference to an AntiCheatConfig asset.
- *   - Adjust scanInterval and blacklist as needed.
+ * - Assign your AntiCheatConfig asset to the 'config' field.
+ * - Optionally adjust the scan interval (default is 5 seconds).
+ * - You can customize the list of blacklisted process names if needed.
+ * 
+ * Notes:
+ * - This script uses System.Diagnostics.Process, which works on Windows standalone builds.
+ * - It requires appropriate permissions to enumerate processes.
+ * 
+ * Usage example:
+ * Attach this script to a GameObject in your initial scene.
  */
 
 using UnityEngine;
@@ -19,9 +27,10 @@ public class ProcessWatcher : MonoBehaviour
 {
     [Header("Configuration")]
     [SerializeField] private AntiCheatConfig config;
-    [SerializeField] private float scanInterval = 5f;
+    [SerializeField, Tooltip("How often (in seconds) to scan for blacklisted processes.")] 
+    private float scanInterval = 5f;
 
-    [Tooltip("Process names to detect (case-insensitive).")]
+    [Tooltip("Process names to watch for (case-insensitive).")]
     [SerializeField] private string[] blacklistedProcesses =
     {
         "cheatengine", "dnspy", "ilspy", "x64dbg", "x32dbg", "ida", "ollydbg", "reclass", "processhacker"
@@ -29,7 +38,19 @@ public class ProcessWatcher : MonoBehaviour
 
     private void Start()
     {
-        if (config == null || !config.antiCheatEnabled) return;
+        if (config == null)
+        {
+            Debug.LogError("ProcessWatcher: Config asset is not assigned.");
+            enabled = false;
+            return;
+        }
+
+        if (!config.antiCheatEnabled)
+        {
+            enabled = false;
+            return;
+        }
+
         DontDestroyOnLoad(gameObject);
         StartCoroutine(ScanLoop());
     }
@@ -59,8 +80,12 @@ public class ProcessWatcher : MonoBehaviour
     private void TriggerDetection(string message)
     {
         if (!config.antiCheatEnabled) return;
-        if (config.logDetections) Debug.LogError(message);
-        if (config.terminateOnDetection) TerminateGame();
+
+        if (config.logDetections)
+            Debug.LogError("[AntiCheat] " + message);
+
+        if (config.terminateOnDetection)
+            TerminateGame();
     }
 
     private void TerminateGame()

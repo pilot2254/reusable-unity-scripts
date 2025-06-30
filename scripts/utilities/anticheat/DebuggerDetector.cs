@@ -1,12 +1,16 @@
 /*
  * DebuggerDetector.cs
- *
- * Description:
- *   Checks if the game is being run under a debugger (Visual Studio, dnSpy, etc).
- *
- * Setup:
- *   - Attach to any active GameObject in the scene.
- *   - Assign AntiCheatConfig in Inspector.
+ * 
+ * Detects if a debugger is attached to the game process at startup.
+ * If a debugger is found, it triggers the configured anti-cheat response.
+ * 
+ * Usage:
+ * - Attach to an early initialization GameObject.
+ * - Assign AntiCheatConfig.
+ * 
+ * Limitations:
+ * - Only detects debugger attachment at start.
+ * - Does not continuously monitor for debugger attach/detach.
  */
 
 using UnityEngine;
@@ -18,7 +22,19 @@ public class DebuggerDetector : MonoBehaviour
 
     private void Start()
     {
-        if (config == null || !config.antiCheatEnabled) return;
+        if (config == null)
+        {
+            Debug.LogError("DebuggerDetector: Config asset is not assigned.");
+            enabled = false;
+            return;
+        }
+
+        if (!config.antiCheatEnabled)
+        {
+            enabled = false;
+            return;
+        }
+
         DontDestroyOnLoad(gameObject);
 
         if (Debugger.IsAttached || Debugger.IsLogging())
@@ -28,8 +44,12 @@ public class DebuggerDetector : MonoBehaviour
     private void TriggerDetection(string message)
     {
         if (!config.antiCheatEnabled) return;
-        if (config.logDetections) Debug.LogError(message);
-        if (config.terminateOnDetection) TerminateGame();
+
+        if (config.logDetections)
+            Debug.LogError("[AntiCheat] " + message);
+
+        if (config.terminateOnDetection)
+            TerminateGame();
     }
 
     private void TerminateGame()
