@@ -1,8 +1,4 @@
-// AXIOM.cs - Open Source Unity Anti-Cheat Runtime
-// License: MIT
-// Description: Centralized, modular, single-file anti-cheat system for Unity 6+
-// Features: Assembly integrity, debugger detection, Mono injection, external process monitor,
-// speedhack detection, stack trace check, method hash verification, memory decoys
+// AXIOM.cs - Open Source Unity Anti-Cheat Runtime Framework
 
 using System;
 using System.Collections.Generic;
