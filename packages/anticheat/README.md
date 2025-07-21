@@ -1,6 +1,8 @@
-# AntiCheat Utilities for Unity
+# AXIOM - AntiCheat Utilities for your Unity games.
 
 A set of scripts designed to detect and prevent common cheating techniques in Unity games. This anti-cheat system aims to enhance game security by monitoring and mitigating unauthorized modifications and debugging attempts.
+
+> AXIOM - a statement that is taken to be true, to serve as a premise or starting point for further reasoning and arguments.
 
 ## Features
 
@@ -31,3 +33,4 @@ MIT License
 ## Contact
 
 Discord: @michal.flaska or @pilot2254
+Or simply [open an issue](https://github.com/pilot2254/reusable-unity-scripts/issues).
