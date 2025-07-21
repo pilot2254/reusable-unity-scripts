@@ -21,12 +21,14 @@ public sealed class AXIOM : MonoBehaviour
     private static readonly object _lock = new object();
     private DateTime _lastRealTime;
     private float _lastGameTime;
-    private List<IntPtr> _decoyPointers = new List<IntPtr>();
-    private Dictionary<MethodInfo, string> _methodHashes = new Dictionary<MethodInfo, string>();
+    private List<IntPtr> _decoyPointers = new();
+    private Dictionary<MethodInfo, string> _methodHashes = new();
 
-    // === CONFIGURATION ===
+    // === CENTRALIZED CONFIGURATION ===
     public class Config
     {
+        public string AntiCheatName = "AXIOM";
+
         public bool CheckAssemblyIntegrity = true;
         public bool DetectDebugger = true;
         public bool DetectMonoInjection = true;
@@ -37,10 +39,14 @@ public sealed class AXIOM : MonoBehaviour
         public bool CheckStackTrace = true;
 
         public float SpeedHackThreshold = 0.5f;
-        public List<string> KnownBadProcesses = new List<string> { "cheatengine", "ollydbg", "x64dbg", "dnspy", "processhacker" };
-        public List<string> SuspiciousAssemblies = new List<string> { "dnlib", "mono.cecil", "xmono", "cheat" };
+        public List<string> KnownBadProcesses = new() { "cheatengine", "ollydbg", "x64dbg", "dnspy", "processhacker" };
+        public List<string> SuspiciousAssemblies = new() { "dnlib", "mono.cecil", "xmono", "cheat" };
+
         public float ProcessScanInterval = 5f;
         public float SpeedHackScanInterval = 1f;
+
+        public string GameAssemblyNameHint = "YourGame"; // used in mono injection check
+        public bool QuitOnDetection = true;
     }
 
     public static Config Settings = new Config();
@@ -78,12 +84,10 @@ public sealed class AXIOM : MonoBehaviour
     private void VerifyAssemblies()
     {
         string path = Assembly.GetExecutingAssembly().Location;
-        using (var md5 = MD5.Create())
-        {
-            byte[] hash = md5.ComputeHash(File.ReadAllBytes(path));
-            string hashString = BitConverter.ToString(hash).Replace("-", "");
-            Debug.Log("AXIOM: Assembly MD5: " + hashString);
-        }
+        using var md5 = MD5.Create();
+        byte[] hash = md5.ComputeHash(File.ReadAllBytes(path));
+        string hashString = BitConverter.ToString(hash).Replace("-", "");
+        Log("Assembly MD5: " + hashString);
     }
 
     // === MODULE: DEBUGGER DETECTION ===
@@ -91,8 +95,8 @@ public sealed class AXIOM : MonoBehaviour
     {
         if (Debugger.IsAttached || IsDebuggerPresent())
         {
-            Debug.LogWarning("AXIOM: Debugger detected.");
-            Application.Quit();
+            Log("Debugger detected.");
+            Kill();
         }
     }
 
@@ -106,10 +110,16 @@ public sealed class AXIOM : MonoBehaviour
         foreach (var asm in assemblies)
         {
             string asmName = asm.GetName().Name.ToLower();
-            if (Settings.SuspiciousAssemblies.Any(s => asmName.Contains(s)))
+            if (!asmName.StartsWith("unity") &&
+                !asmName.StartsWith("system") &&
+                !asmName.StartsWith("mscorlib") &&
+                !asm.Location.Contains(Settings.GameAssemblyNameHint))
             {
-                Debug.LogWarning("AXIOM: Suspicious assembly: " + asmName);
-                Application.Quit();
+                if (Settings.SuspiciousAssemblies.Any(s => asmName.Contains(s)))
+                {
+                    Log("Suspicious injected assembly: " + asmName);
+                    Kill();
+                }
             }
         }
     }
@@ -123,8 +133,8 @@ public sealed class AXIOM : MonoBehaviour
             string name = proc.ProcessName.ToLower();
             if (Settings.KnownBadProcesses.Any(bad => name.Contains(bad)))
             {
-                Debug.LogWarning("AXIOM: Blacklisted process: " + name);
-                Application.Quit();
+                Log("Blacklisted process: " + name);
+                Kill();
             }
         }
     }
@@ -137,8 +147,8 @@ public sealed class AXIOM : MonoBehaviour
 
         if (Mathf.Abs(gameTimeDelta - realTimeDelta) > Settings.SpeedHackThreshold)
         {
-            Debug.LogWarning("AXIOM: Speedhack detected.");
-            Application.Quit();
+            Log("Speedhack detected.");
+            Kill();
         }
 
         _lastRealTime = DateTime.UtcNow;
@@ -157,10 +167,10 @@ public sealed class AXIOM : MonoBehaviour
             Marshal.WriteInt32(fake, 1337);
             _decoyPointers.Add(fake);
         }
-        Debug.Log("AXIOM: Decoys allocated.");
+        Log("Memory decoys allocated.");
     }
 
-    // === MODULE: METHOD HASHING ===
+    // === MODULE: METHOD IL HASHING ===
     private void CacheMethodHashes()
     {
         var methods = typeof(AXIOM).GetMethods(BindingFlags.NonPublic | BindingFlags.Instance);
@@ -170,11 +180,9 @@ public sealed class AXIOM : MonoBehaviour
             if (body != null)
             {
                 byte[] il = body.GetILAsByteArray();
-                using (var sha = SHA256.Create())
-                {
-                    string hash = BitConverter.ToString(sha.ComputeHash(il)).Replace("-", "");
-                    _methodHashes[m] = hash;
-                }
+                using var sha = SHA256.Create();
+                string hash = BitConverter.ToString(sha.ComputeHash(il)).Replace("-", "");
+                _methodHashes[m] = hash;
             }
         }
         InvokeRepeating(nameof(ValidateMethodHashes), 10f, 30f);
@@ -192,8 +200,8 @@ public sealed class AXIOM : MonoBehaviour
             string current = BitConverter.ToString(SHA256.Create().ComputeHash(body.GetILAsByteArray())).Replace("-", "");
             if (current != expected)
             {
-                Debug.LogWarning($"AXIOM: IL tampering in method: {m.Name}");
-                Application.Quit();
+                Log($"IL tampering detected: {m.Name}");
+                Kill();
             }
         }
     }
@@ -204,8 +212,8 @@ public sealed class AXIOM : MonoBehaviour
         string stack = Environment.StackTrace.ToLower();
         if (stack.Contains("dnspy") || stack.Contains("debugger") || stack.Contains("mono.cecil"))
         {
-            Debug.LogWarning("AXIOM: Suspicious stack trace detected.");
-            Application.Quit();
+            Log("Suspicious stack trace.");
+            Kill();
         }
     }
 
@@ -214,8 +222,22 @@ public sealed class AXIOM : MonoBehaviour
     {
         if (_instance == null)
         {
-            var go = new GameObject("AXIOM");
+            var go = new GameObject(Settings.AntiCheatName);
             _instance = go.AddComponent<AXIOM>();
+        }
+    }
+
+    private void Log(string msg)
+    {
+        Debug.Log($"[{Settings.AntiCheatName}] {msg}");
+    }
+
+    private void Kill()
+    {
+        if (Settings.QuitOnDetection)
+        {
+            Log("Quitting due to violation.");
+            Application.Quit();
         }
     }
 }
