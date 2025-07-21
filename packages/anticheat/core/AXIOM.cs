@@ -1,7 +1,5 @@
 // AXIOM.cs - Open Source Unity Anti-Cheat Runtime Framework
-// Author: Mike
-// License: MIT
-// Version: 1.3
+// Go check out README.md for more info
 
 using System;
 using System.Collections.Generic;
