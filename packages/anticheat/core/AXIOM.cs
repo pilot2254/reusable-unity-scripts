@@ -1,4 +1,7 @@
 // AXIOM.cs - Open Source Unity Anti-Cheat Runtime Framework
+// Author: Mike
+// License: MIT
+// Version: 1.3
 
 using System;
 using System.Collections.Generic;
@@ -15,10 +18,14 @@ public sealed class AXIOM : MonoBehaviour
 {
     private static AXIOM _instance;
     private static readonly object _lock = new object();
+    private static readonly SHA256 _sha256 = SHA256.Create();
+    private static readonly MD5 _md5 = MD5.Create();
+
     private DateTime _lastRealTime;
     private float _lastGameTime;
-    private List<IntPtr> _decoyPointers = new();
-    private Dictionary<MethodInfo, string> _methodHashes = new();
+
+    private readonly List<IntPtr> _decoyPointers = new();
+    private readonly Dictionary<MethodInfo, string> _methodHashes = new();
 
     // === CENTRALIZED CONFIGURATION ===
     public class Config
@@ -35,27 +42,46 @@ public sealed class AXIOM : MonoBehaviour
         public bool CheckStackTrace = true;
 
         public float SpeedHackThreshold = 0.5f;
-        public List<string> KnownBadProcesses = new() { "cheatengine", "ollydbg", "x64dbg", "dnspy", "processhacker" };
-        public List<string> SuspiciousAssemblies = new() { "dnlib", "mono.cecil", "xmono", "cheat" };
+
+        public List<string> KnownBadProcesses = new()
+        {
+            "cheatengine", "ollydbg", "x64dbg", "dnspy", "processhacker"
+        };
+
+        public List<string> SuspiciousAssemblies = new()
+        {
+            "dnlib", "mono.cecil", "xmono", "cheat"
+        };
 
         public float ProcessScanInterval = 5f;
         public float SpeedHackScanInterval = 1f;
 
-        public string GameAssemblyNameHint = "YourGame"; // used in mono injection check
+        public string GameAssemblyNameHint = "YourGame";
         public bool QuitOnDetection = true;
     }
 
-    public static Config Settings = new Config();
-    // === END CONFIGURATION ===
+    public static readonly Config Settings = new();
+
+    // === INIT ===
+    public static void Initialize()
+    {
+        if (_instance != null) return;
+
+        var obj = new GameObject(Settings.AntiCheatName);
+        _instance = obj.AddComponent<AXIOM>();
+        DontDestroyOnLoad(obj);
+    }
 
     void Awake()
     {
-        lock (_lock)
+        if (_instance != null && _instance != this)
         {
-            if (_instance != null) Destroy(gameObject);
-            _instance = this;
-            DontDestroyOnLoad(gameObject);
+            Destroy(gameObject);
+            return;
         }
+
+        _instance = this;
+        DontDestroyOnLoad(gameObject);
     }
 
     void Start()
@@ -65,28 +91,31 @@ public sealed class AXIOM : MonoBehaviour
         if (Settings.DetectMonoInjection) CheckMonoInjection();
         if (Settings.ValidateMethodHashes) CacheMethodHashes();
         if (Settings.CheckStackTrace) InvokeRepeating(nameof(CheckStackConsistency), 3f, 10f);
+        if (Settings.MonitorExternalProcesses) InvokeRepeating(nameof(ScanProcesses), 1f, Settings.ProcessScanInterval);
+        if (Settings.DetectSpeedHack) InvokeRepeating(nameof(CheckSpeedHack), 1f, Settings.SpeedHackScanInterval);
+        if (Settings.UseMemoryDecoys) CreateMemoryDecoys();
 
-        if (Settings.MonitorExternalProcesses)
-            InvokeRepeating(nameof(ScanProcesses), 1f, Settings.ProcessScanInterval);
-
-        if (Settings.DetectSpeedHack)
-            InvokeRepeating(nameof(CheckSpeedHack), 1f, Settings.SpeedHackScanInterval);
-
-        if (Settings.UseMemoryDecoys)
-            CreateMemoryDecoys();
+        _lastRealTime = DateTime.UtcNow;
+        _lastGameTime = Time.time;
     }
 
-    // === MODULE: ASSEMBLY INTEGRITY ===
+    // === ASSEMBLY INTEGRITY ===
     private void VerifyAssemblies()
     {
-        string path = Assembly.GetExecutingAssembly().Location;
-        using var md5 = MD5.Create();
-        byte[] hash = md5.ComputeHash(File.ReadAllBytes(path));
-        string hashString = BitConverter.ToString(hash).Replace("-", "");
-        Log("Assembly MD5: " + hashString);
+        try
+        {
+            string path = Assembly.GetExecutingAssembly().Location;
+            byte[] hash = _md5.ComputeHash(File.ReadAllBytes(path));
+            string hashString = BitConverter.ToString(hash).Replace("-", "");
+            Log("Assembly MD5: " + hashString);
+        }
+        catch (Exception ex)
+        {
+            Log("Assembly hash failed: " + ex.Message);
+        }
     }
 
-    // === MODULE: DEBUGGER DETECTION ===
+    // === DEBUGGER CHECK ===
     private void CheckDebugger()
     {
         if (Debugger.IsAttached || IsDebuggerPresent())
@@ -99,17 +128,16 @@ public sealed class AXIOM : MonoBehaviour
     [DllImport("kernel32.dll")]
     private static extern bool IsDebuggerPresent();
 
-    // === MODULE: MONO INJECTION DETECTION ===
+    // === MONO INJECTION CHECK ===
     private void CheckMonoInjection()
     {
-        var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-        foreach (var asm in assemblies)
+        foreach (var asm in AppDomain.CurrentDomain.GetAssemblies())
         {
-            string asmName = asm.GetName().Name.ToLower();
+            string asmName = asm.GetName().Name.ToLowerInvariant();
             if (!asmName.StartsWith("unity") &&
                 !asmName.StartsWith("system") &&
                 !asmName.StartsWith("mscorlib") &&
-                !asm.Location.Contains(Settings.GameAssemblyNameHint))
+                !asm.Location.Contains(Settings.GameAssemblyNameHint, StringComparison.OrdinalIgnoreCase))
             {
                 if (Settings.SuspiciousAssemblies.Any(s => asmName.Contains(s)))
                 {
@@ -120,22 +148,31 @@ public sealed class AXIOM : MonoBehaviour
         }
     }
 
-    // === MODULE: EXTERNAL PROCESS MONITORING ===
+    // === EXTERNAL PROCESS CHECK ===
     private void ScanProcesses()
     {
-        var processes = Process.GetProcesses();
-        foreach (var proc in processes)
+        try
         {
-            string name = proc.ProcessName.ToLower();
-            if (Settings.KnownBadProcesses.Any(bad => name.Contains(bad)))
+            foreach (var proc in Process.GetProcesses())
             {
-                Log("Blacklisted process: " + name);
-                Kill();
+                string name = proc.ProcessName.ToLowerInvariant();
+                foreach (var bad in Settings.KnownBadProcesses)
+                {
+                    if (name.Contains(bad))
+                    {
+                        Log("Blacklisted process: " + name);
+                        Kill();
+                    }
+                }
             }
+        }
+        catch (Exception ex)
+        {
+            Log("Process scan failed: " + ex.Message);
         }
     }
 
-    // === MODULE: SPEEDHACK DETECTION ===
+    // === SPEEDHACK DETECTION ===
     private void CheckSpeedHack()
     {
         float gameTimeDelta = Time.time - _lastGameTime;
@@ -151,36 +188,39 @@ public sealed class AXIOM : MonoBehaviour
         _lastGameTime = Time.time;
     }
 
-    // === MODULE: MEMORY DECOYS ===
+    // === MEMORY DECOYS ===
     [DllImport("kernel32.dll", SetLastError = true)]
-    static extern IntPtr VirtualAlloc(IntPtr lpAddress, uint dwSize, uint flAllocationType, uint flProtect);
+    private static extern IntPtr VirtualAlloc(IntPtr lpAddress, uint dwSize, uint flAllocationType, uint flProtect);
 
     private void CreateMemoryDecoys()
     {
-        for (int i = 0; i < 5; i++)
+        const int decoyCount = 5;
+        for (int i = 0; i < decoyCount; i++)
         {
-            IntPtr fake = VirtualAlloc(IntPtr.Zero, 4, 0x1000 | 0x2000, 0x40);
-            Marshal.WriteInt32(fake, 1337);
-            _decoyPointers.Add(fake);
+            IntPtr ptr = VirtualAlloc(IntPtr.Zero, 4, 0x1000 | 0x2000, 0x40);
+            if (ptr != IntPtr.Zero)
+            {
+                Marshal.WriteInt32(ptr, 1337);
+                _decoyPointers.Add(ptr);
+            }
         }
         Log("Memory decoys allocated.");
     }
 
-    // === MODULE: METHOD IL HASHING ===
+    // === METHOD HASHING ===
     private void CacheMethodHashes()
     {
         var methods = typeof(AXIOM).GetMethods(BindingFlags.NonPublic | BindingFlags.Instance);
         foreach (var m in methods)
         {
             var body = m.GetMethodBody();
-            if (body != null)
-            {
-                byte[] il = body.GetILAsByteArray();
-                using var sha = SHA256.Create();
-                string hash = BitConverter.ToString(sha.ComputeHash(il)).Replace("-", "");
-                _methodHashes[m] = hash;
-            }
+            if (body == null) continue;
+
+            byte[] il = body.GetILAsByteArray();
+            string hash = BitConverter.ToString(_sha256.ComputeHash(il)).Replace("-", "");
+            _methodHashes[m] = hash;
         }
+
         InvokeRepeating(nameof(ValidateMethodHashes), 10f, 30f);
     }
 
@@ -193,19 +233,20 @@ public sealed class AXIOM : MonoBehaviour
             var body = m.GetMethodBody();
             if (body == null) continue;
 
-            string current = BitConverter.ToString(SHA256.Create().ComputeHash(body.GetILAsByteArray())).Replace("-", "");
-            if (current != expected)
+            byte[] currentIL = body.GetILAsByteArray();
+            string actual = BitConverter.ToString(_sha256.ComputeHash(currentIL)).Replace("-", "");
+            if (actual != expected)
             {
-                Log($"IL tampering detected: {m.Name}");
+                Log("IL tampering detected: " + m.Name);
                 Kill();
             }
         }
     }
 
-    // === MODULE: STACK TRACE CHECK ===
+    // === STACK TRACE MONITOR ===
     private void CheckStackConsistency()
     {
-        string stack = Environment.StackTrace.ToLower();
+        string stack = Environment.StackTrace.ToLowerInvariant();
         if (stack.Contains("dnspy") || stack.Contains("debugger") || stack.Contains("mono.cecil"))
         {
             Log("Suspicious stack trace.");
@@ -213,16 +254,7 @@ public sealed class AXIOM : MonoBehaviour
         }
     }
 
-    // === UTILITIES ===
-    public static void Initialize()
-    {
-        if (_instance == null)
-        {
-            var go = new GameObject(Settings.AntiCheatName);
-            _instance = go.AddComponent<AXIOM>();
-        }
-    }
-
+    // === LOGGING & RESPONSE ===
     private void Log(string msg)
     {
         Debug.Log($"[{Settings.AntiCheatName}] {msg}");
@@ -232,7 +264,7 @@ public sealed class AXIOM : MonoBehaviour
     {
         if (Settings.QuitOnDetection)
         {
-            Log("Quitting due to violation.");
+            Log("Terminating game due to security violation.");
             Application.Quit();
         }
     }
