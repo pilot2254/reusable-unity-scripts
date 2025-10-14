@@ -41,7 +41,6 @@ Maintainers reserve the right to remove, edit, or reject any contributions, comm
 Report violations or concerns to the maintainers via Discord:
 
 - @michal.flaska  
-- @pilot2254  
 
 Or by [creating an issue](https://github.com/pilot2254/reusable-unity-scripts/issues/new/choose).
 
